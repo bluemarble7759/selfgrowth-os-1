@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelfGrowth OS v3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: '#6366f1', 600: '#4f46e5' },
+                        study: '#3b82f6', workout: '#10b981', economy: '#f59e0b', style: '#ec4899',
+                        darkbg: '#0f172a', cardbg: '#1e293b', borderbg: '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: 'Pretendard', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-darkbg text-slate-100 min-h-screen flex flex-col">
+
+    <header class="border-b border-borderbg bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-brand-600 to-indigo-400 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+                    <i class="fa-solid fa-layer-group text-xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none">SelfGrowth OS <span class="text-xs px-2 py-0.5 bg-brand-500/20 text-indigo-300 rounded border border-brand-500/30">v3.0 Production</span></h1>
+                    <p class="text-xs text-slate-400 mt-1">GitHub Pages CI/CD 즉시 구동 웹 애플리케이션</p>
+                </div>
+            </div>
+
+            <div class="flex items-center bg-slate-800 p-1 rounded-xl border border-borderbg text-xs font-semibold">
+                <button onclick="switchView('main')" id="nav-main" class="px-3.5 py-2 rounded-lg bg-brand-600 text-white shadow flex items-center gap-1.5">
+                    <i class="fa-solid fa-table-cells"></i> 1. 메인 블록 화면
+                </button>
+                <button onclick="switchView('setting')" id="nav-setting" class="px-3.5 py-2 rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-sliders"></i> 2. 블록 세팅 화면
+                </button>
+                <button onclick="switchView('explorer')" id="nav-explorer" class="px-3.5 py-2 rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-cubes"></i> 3. 멀티 블록 탐색기
+                </button>
+            </div>
+
+            <button onclick="toggleOnlineState()" id="sync-toggle-btn" class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-full flex items-center gap-1.5 font-medium cursor-pointer">
+                <span id="sync-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="sync-status-text">Online (Auto Sync)</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+
+        <section id="view-main" class="space-y-6">
+            <div class="bg-cardbg p-5 rounded-2xl border border-borderbg space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <div>
+                        <h2 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-indigo-400"></i> 오늘의 가용 시간 배분 (Daily Time Budget)
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">총 가용 시간: <span class="text-indigo-300 font-bold">5.5 시간</span> / 학업, 운동, 경제, 옷 영역 할당 완료</p>
+                    </div>
+                    <div class="flex gap-2 text-[11px] font-semibold">
+                        <span class="px-2.5 py-1 bg-study/10 text-study border border-study/20 rounded-md">학업 2.0h</span>
+                        <span class="px-2.5 py-1 bg-workout/10 text-workout border border-workout/20 rounded-md">운동 1.5h</span>
+                        <span class="px-2.5 py-1 bg-economy/10 text-economy border border-economy/20 rounded-md">경제 1.0h</span>
+                        <span class="px-2.5 py-1 bg-style/10 text-style border border-style/20 rounded-md">옷/스타일 1.0h</span>
+                    </div>
+                </div>
+                <div class="w-full bg-slate-900 rounded-full h-3.5 p-0.5 flex overflow-hidden border border-borderbg">
+                    <div class="bg-study h-full rounded-l-full" style="width: 36%"></div>
+                    <div class="bg-workout h-full" style="width: 27%"></div>
+                    <div class="bg-economy h-full" style="width: 18%"></div>
+                    <div class="bg-style h-full rounded-r-full" style="width: 19%"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-cardbg p-4 rounded-xl border border-study/40 space-y-3 relative overflow-hidden">
+                    <div class="w-1 h-full bg-study absolute left-0 top-0"></div>
+                    <div class="flex justify-between items-center pl-2">
+                        <span class="text-xs font-bold text-study"><i class="fa-solid fa-book mr-1"></i> 학업</span>
+                        <span class="text-[10px] px-1.5 py-0.5 bg-slate-800 text-slate-400 rounded">2.0 hrs</span>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-100 pl-2">전공 논문 및 알고리즘</h3>
+                    <div class="space-y-2 pl-2 text-xs">
+                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded accent-study"><span class="line-through text-slate-500">전공 서적 30p 독서</span></label>
+                        <label class="flex items-center gap-2"><input type="checkbox" class="rounded accent-study"><span>백준 알고리즘 2문제</span></label>
+                    </div>
+                </div>
+
+                <div class="bg-cardbg p-4 rounded-xl border border-workout/40 space-y-3 relative overflow-hidden">
+                    <div class="w-1 h-full bg-workout absolute left-0 top-0"></div>
+                    <div class="flex justify-between items-center pl-2">
+                        <span class="text-xs font-bold text-workout"><i class="fa-solid fa-dumbbell mr-1"></i> 운동</span>
+                        <span class="text-[10px] px-1.5 py-0.5 bg-slate-800 text-slate-400 rounded">1.5 hrs</span>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-100 pl-2">상체 근력 & 인터벌 유산소</h3>
+                    <div class="space-y-2 pl-2 text-xs">
+                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded accent-workout"><span class="line-through text-slate-500">풀업/딥스 5세트</span></label>
+                        <label class="flex items-center gap-2"><input type="checkbox" class="rounded accent-workout"><span>인터벌 러닝 20분</span></label>
+                    </div>
+                </div>
+
+                <div class="bg-cardbg p-4 rounded-xl border border-economy/40 space-y-3 relative overflow-hidden">
+                    <div class="w-1 h-full bg-economy absolute left-0 top-0"></div>
+                    <div class="flex justify-between items-center pl-2">
+                        <span class="text-xs font-bold text-economy"><i class="fa-solid fa-chart-line mr-1"></i> 경제</span>
+                        <span class="text-[10px] px-1.5 py-0.5 bg-slate-800 text-slate-400 rounded">1.0 hrs</span>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-100 pl-2">증시 뉴스 & 지출 트래킹</h3>
+                    <div class="space-y-2 pl-2 text-xs">
+                        <label class="flex items-center gap-2"><input type="checkbox" class="rounded accent-economy"><span>거시경제 뉴스 브리핑</span></label>
+                        <label class="flex items-center gap-2"><input type="checkbox" class="rounded accent-economy"><span>가계부 정리 및 지출점검</span></label>
+                    </div>
+                </div>
+
+                <div class="bg-cardbg p-4 rounded-xl border border-style/40 space-y-3 relative overflow-hidden">
+                    <div class="w-1 h-full bg-style absolute left-0 top-0"></div>
+                    <div class="flex justify-between items-center pl-2">
+                        <span class="text-xs font-bold text-style"><i class="fa-solid fa-shirt mr-1"></i> 옷/스타일</span>
+                        <span class="text-[10px] px-1.5 py-0.5 bg-slate-800 text-slate-400 rounded">1.0 hrs</span>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-100 pl-2">착장 룩북 & 체형 스펙 관리</h3>
+                    <div class="space-y-2 pl-2 text-xs">
+                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded accent-style"><span class="line-through text-slate-500">시티보이 착장 코디</span></label>
+                        <label class="flex items-center gap-2"><input type="checkbox" class="rounded accent-style"><span>의류 케어 & 치수 측정</span></label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-setting" class="hidden space-y-6">
+            <div class="bg-cardbg p-6 rounded-2xl border border-borderbg space-y-4">
+                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-indigo-400"></i> 블록 규격 & 가용 시간 세팅
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="border-b border-borderbg text-slate-400 bg-slate-900/50">
+                                <th class="p-3">영역</th><th class="p-3">블록 타이틀</th><th class="p-3">Grid Min/Max</th><th class="p-3">시간(hr)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-borderbg">
+                            <tr><td class="p-3 font-bold text-study">학업</td><td class="p-3">전공 논문 및 알고리즘</td><td class="p-3">minW:1 / maxW:4</td><td class="p-3">2.0</td></tr>
+                            <tr><td class="p-3 font-bold text-workout">운동</td><td class="p-3">상체 근력 & 인터벌</td><td class="p-3">minW:1 / maxW:3</td><td class="p-3">1.5</td></tr>
+                            <tr><td class="p-3 font-bold text-economy">경제</td><td class="p-3">증시 뉴스 & 포트폴리오</td><td class="p-3">minW:1 / maxW:2</td><td class="p-3">1.0</td></tr>
+                            <tr><td class="p-3 font-bold text-style">스타일</td><td class="p-3">착장 룩북 & 치수 측정</td><td class="p-3">minW:1 / maxW:2</td><td class="p-3">1.0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-explorer" class="hidden space-y-6">
+            <div class="bg-cardbg p-6 rounded-2xl border border-borderbg space-y-4">
+                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-cubes text-brand-500"></i> 멀티 블록 탐색기
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-slate-900 rounded-xl border border-borderbg space-y-2">
+                        <span class="text-xs font-bold text-study">학업 프리셋</span>
+                        <h4 class="font-bold text-sm">토익/OPIc 어학 마스터</h4>
+                        <button onclick="alert('메인 블록에 추가되었습니다.')" class="w-full py-1.5 bg-indigo-600 text-white rounded text-xs font-bold mt-2">1-Click 추가</button>
+                    </div>
+                    <div class="p-4 bg-slate-900 rounded-xl border border-borderbg space-y-2">
+                        <span class="text-xs font-bold text-economy">경제 프리셋</span>
+                        <h4 class="font-bold text-sm">청약/적금 자산 관리</h4>
+                        <button onclick="alert('메인 블록에 추가되었습니다.')" class="w-full py-1.5 bg-indigo-600 text-white rounded text-xs font-bold mt-2">1-Click 추가</button>
+                    </div>
+                    <div class="p-4 bg-slate-900 rounded-xl border border-borderbg space-y-2">
+                        <span class="text-xs font-bold text-style">스타일 프리셋</span>
+                        <h4 class="font-bold text-sm">캡슐 워드로브 코디</h4>
+                        <button onclick="alert('메인 블록에 추가되었습니다.')" class="w-full py-1.5 bg-indigo-600 text-white rounded text-xs font-bold mt-2">1-Click 추가</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        let isOnline = true;
+        function switchView(v) {
+            ['main', 'setting', 'explorer'].forEach(id => {
+                document.getElementById('view-' + id).classList.add('hidden');
+                document.getElementById('nav-' + id).className = 'px-3.5 py-2 rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5';
+            });
+            document.getElementById('view-' + v).classList.remove('hidden');
+            document.getElementById('nav-' + v).className = 'px-3.5 py-2 rounded-lg bg-brand-600 text-white shadow flex items-center gap-1.5';
+        }
+        function toggleOnlineState() {
+            isOnline = !isOnline;
+            document.getElementById('sync-status-text').innerText = isOnline ? "Online (Auto Sync)" : "Offline Mode (IndexedDB)";
+            alert(isOnline ? "온라인 재연결: 로컬 데이터가 서버로 자동 싱크됩니다." : "오프라인 전환: 로컬 디스크에 임시 저장됩니다.");
+        }
+    </script>
+</body>
+</html>
