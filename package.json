@@ -1,0 +1,11 @@
+{
+  "name": "selfgrowth-os",
+  "version": "3.0.0",
+  "description": "Campus Life & Time Allocation OS for University Students & Workers",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "author": "조현우",
+  "license": "MIT"
+}
